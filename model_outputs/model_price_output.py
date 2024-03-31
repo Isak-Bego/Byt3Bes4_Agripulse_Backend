@@ -2,12 +2,11 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
-
 # Load the saved model
-model = load_model('../models/model_price.keras')
+model = load_model('./models/model_price.keras')
 
 # Load training data to extract unique countries
-df_train = pd.read_csv('../data-sets/8.csv')
+df_train = pd.read_csv('./data-sets/8.csv')
 
 # Define function to preprocess input data
 def preprocess_input(input_data):
@@ -42,7 +41,17 @@ def preprocess_input(input_data):
     
     return input_normalized
 
-def predict_price(user_input):
+def predict_price(consumption, production, product_vegies, product_wheat,year,entity):
+    user_input = {
+    'Consumption': consumption,
+    'Production': production,
+    f'Product_{product_vegies}': [1],  # Example: One-hot encoding for the product Potatoes
+    'Product_Wheat': product_wheat,     # Example: One-hot encoding for other products (not Wheat)
+    # Add similar one-hot encoding columns for other products (if applicable)
+    'Year': year,            # Example: Year 2024
+    'Entity_Bulgaria': entity, # Example: One-hot encoding for the entity Afghanistan
+    # Add similar one-hot encoding columns for other entities (if applicable)
+    }
     # Preprocess user input
     input_normalized = preprocess_input(user_input)
 
@@ -57,18 +66,7 @@ def predict_price(user_input):
     return predictions[0][0]
 
 # User input (example)
-user_input = {
-    'Consumption': [700],
-    'Production': [80],
-    'Product_Potatoes': [1],  # Example: One-hot encoding for the product Potatoes
-    'Product_Wheat': [0],     # Example: One-hot encoding for other products (not Wheat)
-    # Add similar one-hot encoding columns for other products (if applicable)
-    'Year': [2050],            # Example: Year 2024
-    'Entity_Bulgaria': [1], # Example: One-hot encoding for the entity Afghanistan
-    # Add similar one-hot encoding columns for other entities (if applicable)
-}
+
 
 # Get predicted price
-predicted_price = predict_price(user_input)
 
-print(f"Predicted price: {predicted_price}")

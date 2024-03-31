@@ -4,10 +4,10 @@ from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
 
 # Load the saved model
-model = load_model('../models/model_product.keras')
+model = load_model('./models/model_product.keras')
 
 # Load training data to extract unique countries
-df_train = pd.read_csv('../data-sets/yield_df.csv')
+df_train = pd.read_csv('./data-sets/yield_df.csv')
 
 # Define function to preprocess input data
 def preprocess_input(input_data):
@@ -52,9 +52,16 @@ def switch_case(item_number):
 
     return switcher.get(item_number, "Invalid case")
 
-def find_adjacent_items(user_input):
+def find_adjacent_items(area, hgHa, rain, pesticides_tonnes, avg_tem):
+    user_input_Items = {
+            'Area_Bulgaria': [area],  # Example value
+            'hg/ha_yield': [hgHa],
+            'average_rain_fall_mm_per_year': [rain],  
+            'pesticides_tonnes': [pesticides_tonnes],     
+            'avg_temp': [avg_tem],            
+        }
     # Preprocess user input
-    input_normalized = preprocess_input(user_input)
+    input_normalized = preprocess_input(user_input_Items)
 
     # Predict item for user input
     predicted_item = model.predict(input_normalized)
@@ -73,14 +80,3 @@ def find_adjacent_items(user_input):
 
     return [lower_item, current_item, higher_item]
 
-# Example usage
-user_input = {
-    'Area_Bulgaria': [1],  # Example value
-    'hg/ha_yield': [36213],
-    'average_rain_fall_mm_per_year': [1455],  
-    'pesticides_tonnes': [11],     
-    'avg_temp': [20.2],            
-}
-
-adjacent_items = find_adjacent_items(user_input)
-print("Adjacent Items:", adjacent_items)
